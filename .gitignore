@@ -1,0 +1,12 @@
+.classpath
+.project
+.settings
+.idea/
+bin
+log
+ranks.bin
+replay
+ss
+
+config/setting/
+NullpoMino.jar
