@@ -31,12 +31,17 @@ package mu.nu.nullpo.gui.slick;
 import mu.nu.nullpo.gui.GameKeyDummy;
 import mu.nu.nullpo.util.CustomProperties;
 
+import org.apache.log4j.Logger;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Input;
 
 /**
  * Key input state manager (Only use with Slick. Don't use inside game modes!)
  */
 public class GameKeySlick extends GameKeyDummy {
+	static Logger log = Logger.getLogger(GameKeySlick.class);
+
 	/** Key input state (Used by all game states) */
 	public static GameKeySlick[] gamekey;
 
@@ -112,6 +117,27 @@ public class GameKeySlick extends GameKeyDummy {
 	 */
 	public GameKeySlick(int pl) {
 		super(pl);
+	}
+
+	public void clear() {
+		super.clear();
+
+		if (NullpoMinoSlick.useJInputKeyboard) {
+			return;
+		}
+
+		// Seems to be an issue for Windows that makes keys "stay pressed"
+		// if the game loses focus; re-creating seems dirty, but so far
+		// it's the only thing that has worked consistently.
+		try {
+			Keyboard.destroy();
+			Keyboard.create();
+		}
+		// Supposedly this can throw, but none of the current implementations
+		// seem to actually do it... log it anyway just in case!
+		catch (LWJGLException ex) {
+			log.error("Couldn't reset the keyboard", ex);
+		}
 	}
 
 	/**
